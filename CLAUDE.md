@@ -1,6 +1,46 @@
-# GridCraft — instructions for agents
+# IrisGrid — instructions for agents
 
-GridCraft is a clean-room, open-source, Rust-native spreadsheet targeting Microsoft Excel parity — and superiority (speed, openness, agent control). It runs natively on macOS, Windows, Linux and BSD, and on the web via WASM. Siblings with the same conventions: `../designcraft` (InDesign-class, the closest reference), `../photocraft` (Photoshop), `../vectorcraft` (Illustrator), `../pdfcraft` (Acrobat), `../filmcraft` (Premiere), `../lightcraft` (Lightroom), `../effectcraft` (After Effects).
+## LEIA PRIMEIRO: o IrisGrid é uma cópia modificada do GridCraft
+
+**Esta seção vale mais que todo o resto do arquivo.** O resto veio do GridCraft; onde ele contradizer esta seção, esta seção vence.
+
+O IrisGrid é uma cópia (fork) do [GridCraft](https://github.com/storytold/gridcraft), da equipe ArtCraft, adaptada para o ecossistema Iris por **Gabriel Alves Tech**. O repositório é `GabrielAlvesB/IrisGrid` (remote `origin`); o GridCraft original é o remote `upstream`, usado **só para trazer atualizações**: nunca envie nada para ele. O IrisWord (`../IrisWord`) é a cópia irmã do WordCraft e segue as mesmas regras.
+
+Todos os ajustes listados abaixo foram feitos de propósito. **Nenhuma atualização vinda do GridCraft pode desfazê-los.** Ao trazer uma versão nova, o trabalho é incorporar as melhorias do GridCraft **mantendo o IrisGrid como ele é**. Em qualquer conflito entre o código do GridCraft e um ajuste do IrisGrid, fica o do IrisGrid. Na dúvida, pergunte ao dono antes de mudar.
+
+### O que é do IrisGrid e não pode ser revertido
+
+1. **Nome visível "IrisGrid"** em tudo que o usuário vê: título da janela, Sobre, mensagens, PDF e `.xlsx` gerados (`Application`), README, instaladores, pacotes. "GridCraft" só aparece nos créditos e avisos de copyright (`LICENSE-MIT`, `NOTICE`, as linhas "Based on GridCraft" e de copyright em `crates/ui-egui/src/dialogs/about.rs`, a seção de licença do README e as frases "GridCraft contributors" / "GridCraft authors"); esses avisos são exigidos pela licença e também não podem ser removidos.
+2. **ID do app `com.iris.irisgrid`** (nunca `ai.storyteller.gridcraft`): `packaging/linux/com.iris.irisgrid.*`, `packaging/linux/flatpak/com.iris.irisgrid*.yml`, `packaging/macos/Info.plist.in`, os ícones em `assets/app-icon/hicolor/*/apps/`, `omastore.toml`.
+3. **Ícone do IrisGrid** (folha de planilha com linha de cabeçalho, grade e célula selecionada com a alça de preencher, gradiente `#00b24e` → `#00a2a5`, o mesmo desenho do Workspace do Iris): a fonte é `assets/app-icon/gridcraft.svg`; todo PNG, `.ico` e `.icns` de `assets/app-icon/` é gerado dela (`packaging/icons.sh`, viewBox 64). Nunca aceite ícones do GridCraft por cima destes.
+4. **Sem marca ArtCraft**: sem `docs/brand/`, sem logos ArtCraft, sem links para `getartcraft.com` ou `discord.gg/artcraft`, sem itens de Discord (removidos do Sobre, do menu Ajuda do macOS em `apps/gridcraft/src/native_menu.rs` e das traduções), sem a lista "Crafting Apps" no README. Se uma atualização trouxer menções novas à ArtCraft ou à suíte Crafting Apps na interface, retire-as. A licença de marca da ArtCraft exige isso de forks.
+5. **Atualizador** (`UPDATE_APP` em `crates/ui-egui/src/lib.rs`): `name: "IrisGrid"`, `repo: "GabrielAlvesB/IrisGrid"` (exatamente assim: o atualizador compara os links diferenciando maiúsculas), `developer: "Gabriel Alves Tech"`, `accent` `#008f4f`. Nunca volte para `craft_update::suite::GRIDCRAFT` puro: o app passaria a baixar o GridCraft por cima do IrisGrid. A verificação ao abrir fica ligada (`app.start_update_check()` em `apps/gridcraft/src/main.rs`).
+6. **Instalador do Windows** (`packaging/windows/`): `UpgradeCode` `D6F1A0C2-6E3B-4B8E-9C47-2A51E0B7F3D9` (em `gridcraft.wxs` e `install-policy.json`) e GUID do componente `GridcraftApp` `B3C8E4F1-27D5-4A6C-8E19-5F0D2C7A9B64` (nunca os do GridCraft, senão um instalador substitui o outro), fabricante `Gabriel Alves Tech`, pasta `Programs\Iris\IrisGrid`, chaves de registro `Software\IrisGrid`. Em `apps/gridcraft/build.rs` e `packaging/windows/app-build.rs.in`, `CompanyName` é `Gabriel Alves Tech`.
+7. **Traduções**: as traduções ficam no próprio repositório (`crates/ui-egui/src/i18n/*.rs`) e as chaves já dizem IrisGrid. O português do Brasil (`pt.rs`) tem as linhas novas do Sobre; ao trazer textos novos com "GridCraft", troque nas chaves **e** nas traduções, senão a tradução deixa de casar.
+8. **CI próprio**: `.github/workflows/ci.yml` é autocontido (sem segredos, token só de leitura, actions fixadas por SHA). **Nunca restaure** os workflows do GridCraft (`storytold/craft-common-actions@...`, SonarCloud, release, FreeBSD, nix, packaging-lint, windows-arm64), nem `sonar-project.properties` ou `.coderabbit.yaml`: eles rodam código de outra organização e repassam segredos. O Dependabot roda semanalmente (`America/Sao_Paulo`).
+9. **Segurança**: `zip` na versão 9 ou mais nova (`Cargo.toml` do workspace) e `webpki-root-certs` 1.0.10 ou mais nova (`Cargo.lock`). Não volte para versões antigas (RUSTSEC-2026-0367/0368/0369/0429 e RUSTSEC-2026-0383).
+10. **Nomes internos mantidos de propósito**: crates `gridcraft-*`, binários `gridcraft.exe` e `gridcraft-cli`, pastas `apps/gridcraft*`, arquivos `assets/app-icon/gridcraft.*`, `packaging/windows/gridcraft.wxs`, variáveis `GRIDCRAFT_*` e os nomes dos arquivos de release (`gridcraft-<versão>-windows-<arq>.msi`, `...-portable.zip`). O atualizador e o Workspace do Iris (`../Iris/src/shared/types/workspace.types.ts`) procuram exatamente esses nomes. Não renomeie.
+
+### Como trazer uma atualização do GridCraft
+
+1. `git fetch upstream --tags` e escolha a tag nova (por exemplo `v0.17.0`). Faça o merge numa branch: `git switch -c update-gridcraft-0.17.0 && git merge v0.17.0`.
+2. Resolva os conflitos mantendo **tudo** da lista acima. Arquivos removidos no IrisGrid (`docs/brand/`, workflows antigos, `sonar-project.properties`, `.coderabbit.yaml`) continuam removidos.
+3. Procure o que entrou de novo com a marca antiga e adapte: `git grep -n -e GridCraft -e ArtCraft -e getartcraft -e discord.gg -e ai.storyteller -e "storytold/gridcraft/releases" -e "Learning Machines"`. Texto visível novo vira IrisGrid; avisos de copyright e créditos ficam como estão.
+4. Arquivos novos em `.github/workflows/` vindos do GridCraft: apague. Ícones ou imagens novas de marca: não adote.
+5. Se a revisão de `craft-libs` mudou, confira se `craft_update::app::App` ainda aceita os campos do `UPDATE_APP`.
+6. Rode `cargo audit`, `cargo xtask assets` e os testes: `cargo test --no-fail-fast -p gridcraft-core -p gridcraft-numfmt -p gridcraft-formula -p gridcraft-functions -p gridcraft-model -p gridcraft-calc -p gridcraft-xlsx -p gridcraft-engine -p gridcraft-ui-egui -p xtask`. Sem `CRAFT_FONTS_DIR` (clone de `storytold/craft-fonts` no commit do `ci.yml`, fora da pasta do ecossistema) dois testes de interface falham por falta de fonte (ẞ, ẻ), e no Windows `engineering::tests::complex_numbers` falha na 15ª casa decimal; nenhum dos três tem relação com as mudanças do IrisGrid (o código deles não foi tocado).
+7. **Versão**: a versão do IrisGrid (`[workspace.package]` no `Cargo.toml`) precisa ser **maior que a da última release do IrisGrid**, senão o atualizador não oferece a nova. Rode `cargo update -w` depois de mudar.
+8. Mostre ao dono o que mudou antes de fazer merge na `main` e de publicar release.
+
+### Como publicar uma release
+
+1. Versão nova no `Cargo.toml`, `cargo update -w`, commit e push na `main`.
+2. Rode `packaging/windows/package.ps1 -Arch x64` num processo `powershell.exe` separado, com a saída indo para arquivo (no PowerShell 5.1, redirecionar dentro do mesmo processo transforma avisos do cargo em erro fatal). Precisa do WiX 5 (`dotnet tool install --global wix --version 5.0.2`). Saída em `dist/release/`.
+3. Gere `dist/release/SHA256SUMS.txt` no formato `hash  nome` (dois espaços, sem `*`). O Workspace do Iris não instala sem ele.
+4. `gh release create v<versão> -R GabrielAlvesB/IrisGrid --title "IrisGrid v<versão>" --notes-file <notas.md> --latest` com o `.msi`, o `-portable.zip` e o `SHA256SUMS.txt`. Notas em português.
+5. Os builds não têm assinatura Authenticode, então o próprio IrisGrid só avisa da versão nova e abre a página da release; a instalação automática acontece pelo Workspace do Iris.
+
+IrisGrid is a clean-room, open-source, Rust-native spreadsheet targeting Microsoft Excel parity — and superiority (speed, openness, agent control). It runs natively on macOS, Windows, Linux and BSD, and on the web via WASM. Siblings with the same conventions: `../designcraft` (InDesign-class, the closest reference), `../photocraft` (Photoshop), `../vectorcraft` (Illustrator), `../pdfcraft` (Acrobat), `../filmcraft` (Premiere), `../lightcraft` (Lightroom), `../effectcraft` (After Effects).
 
 ## Start every session here
 1. Read `plan/STATUS.md` (current milestone, next task), then the task in `plan/execution-plan.md` and the relevant `plan/architecture.md` section. Behaviour reference: `plan/excel/*.md` (`observed-ui.md` holds measured observations of the running app).
@@ -15,10 +55,9 @@ GridCraft is a clean-room, open-source, Rust-native spreadsheet targeting Micros
 - Prefer art generated in code: the UI icon set (`crates/ui-egui/src/icons.rs`), table and cell style palettes, themes and sample workbooks are drawn/defined in code and original.
 - Never copy Office's icons, ribbon artwork, theme XML, table-style definitions, templates, clip art or wording beyond feature names. Excel feature *names* (menu labels, function names) are fine.
 - Screenshots of Microsoft software are never committed (they live only in `plan/excel/screenshots/`).
-- The ArtCraft brand files in `docs/brand/` are ArtCraft trademarks under `docs/brand/LICENSE-brand.txt`, the one exception.
 
 ## Never crash
-People trust GridCraft with their numbers; a crash loses their work. **This outranks feature work.**
+People trust IrisGrid with their numbers; a crash loses their work. **This outranks feature work.**
 - **No panics in non-test code:** no `unwrap()`, `expect()`, `panic!`, `unreachable!`, `todo!`, `unimplemented!`; no `unsafe` (`unsafe_code = "forbid"`).
 - **Errors are `Result<T, E>`** through the crate's error type and `?`.
 - **Input-derived numbers are hostile** (files, formulas, commands, MCP/control params): `get()` instead of indexing, checked/saturating arithmetic, cap input-sized allocations (huge ranges, `REPT`, `SEQUENCE`, whole-column references).

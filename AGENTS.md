@@ -1,6 +1,11 @@
-# GridCraft — instructions for agents
+# IrisGrid — instructions for agents
 
-GridCraft is a clean-room, open-source, Rust-native spreadsheet targeting Microsoft Excel parity — and superiority (speed, openness, agent control). It runs natively on macOS, Windows, Linux and BSD, and on the web via WASM. Siblings with the same conventions: `../designcraft` (InDesign-class, the closest reference), `../photocraft` (Photoshop), `../vectorcraft` (Illustrator), `../pdfcraft` (Acrobat), `../filmcraft` (Premiere), `../lightcraft` (Lightroom), `../effectcraft` (After Effects).
+> **LEIA PRIMEIRO:** o IrisGrid é uma cópia modificada do GridCraft, adaptada para o ecossistema Iris.
+> Antes de qualquer mudança, e principalmente antes de trazer uma atualização do GridCraft, leia a seção
+> "LEIA PRIMEIRO" do [`CLAUDE.md`](CLAUDE.md): ela lista os ajustes do IrisGrid que nunca podem ser desfeitos
+> e vale mais que o resto deste arquivo, que veio do GridCraft.
+
+IrisGrid is a clean-room, open-source, Rust-native spreadsheet targeting Microsoft Excel parity — and superiority (speed, openness, agent control). It runs natively on macOS, Windows, Linux and BSD, and on the web via WASM. Siblings with the same conventions: `../designcraft` (InDesign-class, the closest reference), `../photocraft` (Photoshop), `../vectorcraft` (Illustrator), `../pdfcraft` (Acrobat), `../filmcraft` (Premiere), `../lightcraft` (Lightroom), `../effectcraft` (After Effects).
 
 ## Start every session here
 1. Read `plan/STATUS.md` (current milestone, next task), then the task in `plan/execution-plan.md` and the relevant `plan/architecture.md` section. Behaviour reference: `plan/excel/*.md` (`observed-ui.md` holds measured observations of the running app).
@@ -15,10 +20,9 @@ GridCraft is a clean-room, open-source, Rust-native spreadsheet targeting Micros
 - Prefer art generated in code: the UI icon set (`crates/ui-egui/src/icons.rs`), table and cell style palettes, themes and sample workbooks are drawn/defined in code and original.
 - Never copy Office's icons, ribbon artwork, theme XML, table-style definitions, templates, clip art or wording beyond feature names. Excel feature *names* (menu labels, function names) are fine.
 - Screenshots of Microsoft software are never committed (they live only in `plan/excel/screenshots/`).
-- The ArtCraft brand files in `docs/brand/` are ArtCraft trademarks under `docs/brand/LICENSE-brand.txt`, the one exception.
 
 ## Never crash
-People trust GridCraft with their numbers; a crash loses their work. **This outranks feature work.**
+People trust IrisGrid with their numbers; a crash loses their work. **This outranks feature work.**
 - **No panics in non-test code:** no `unwrap()`, `expect()`, `panic!`, `unreachable!`, `todo!`, `unimplemented!`; no `unsafe` (`unsafe_code = "forbid"`).
 - **Errors are `Result<T, E>`** through the crate's error type and `?`.
 - **Input-derived numbers are hostile** (files, formulas, commands, MCP/control params): validate indexes and ranges before access, use checked access when validity is not established, use checked/saturating arithmetic, and cap input-sized allocations (huge ranges, `REPT`, `SEQUENCE`, whole-column references).
