@@ -4,11 +4,11 @@ members = ["crates/*", "apps/*", "xtask"]
 default-members = ["crates/*", "apps/gridcraft", "apps/gridcraft-cli", "xtask"]
 
 [workspace.package]
-version = "0.16.0"
+version = "0.16.1"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 rust-version = "1.95"
-repository = "https://github.com/storytold/gridcraft"
+repository = "https://github.com/GabrielAlvesB/IrisGrid"
 
 [workspace.dependencies]
 # internal
@@ -41,7 +41,7 @@ web-time = "1.1.0"
 rayon = "1"
 regex = { version = "1", default-features = false, features = ["std", "unicode", "perf"] }
 quick-xml = "0.41"
-zip = { version = "3", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
 sha2 = { version = "0.11", default-features = false }
 # Decrypting password-protected workbooks ([MS-OFFCRYPTO]): AES and SHA-1, pure Rust (wasm-safe).
 aes = { version = "0.9", default-features = false }

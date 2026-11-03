@@ -45,8 +45,9 @@ impl<'a> Package<'a> {
         }
         let mut names = HashMap::new();
         for i in 0..zip.len() {
-            if let Some(n) = zip.name_for_index(i) {
-                names.entry(normalize(n)).or_insert(i);
+            // An entry whose name can't be decoded is skipped, like a part that isn't there.
+            if let Some(Ok(n)) = zip.name_for_index(i) {
+                names.entry(normalize(&n)).or_insert(i);
             }
         }
         Ok(Package { zip, names, total: 0 })
@@ -148,7 +149,7 @@ pub fn oversized_part(bytes: &[u8]) -> Option<(String, u64)> {
     let mut zip = zip::ZipArchive::new(Cursor::new(bytes)).ok()?;
     (0..zip.len().min(MAX_ENTRIES)).find_map(|i| {
         let f = zip.by_index_raw(i).ok()?;
-        (f.size() > MAX_PART).then(|| (f.name().to_string(), f.size()))
+        (f.size() > MAX_PART).then(|| (f.name().map_or_else(|_| format!("entry {i}"), |n| n.to_string()), f.size()))
     })
 }
 

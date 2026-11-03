@@ -7,7 +7,7 @@ const MAX_XML_PART: u64 = 64 * 1024 * 1024;
 const MAX_ENTRIES: usize = 200_000;
 
 /// Relationship kinds (lower case) whose absence after a save isn't a loss: the calculation chain is
-/// a cache Excel rebuilds, and GridCraft never writes it.
+/// a cache Excel rebuilds, and IrisGrid never writes it.
 pub(super) const REBUILT_KINDS: [&str; 1] = ["calcchain"];
 
 // ---------------------------------------------------------------- package validation
@@ -107,7 +107,7 @@ fn resolve_target(source_dir: &str, target: &str) -> String {
 type Zip<'a> = zip::ZipArchive<Cursor<&'a [u8]>>;
 
 fn zip_names(zip: &mut Zip<'_>) -> Vec<String> {
-    (0..zip.len().min(MAX_ENTRIES)).filter_map(|i| zip.by_index_raw(i).ok().filter(|f| !f.is_dir()).map(|f| f.name().to_string())).collect()
+    (0..zip.len().min(MAX_ENTRIES)).filter_map(|i| zip.by_index_raw(i).ok().filter(|f| !f.is_dir()).and_then(|f| f.name().ok().map(|n| n.to_string()))).collect()
 }
 
 fn read_zip_part(zip: &mut Zip<'_>, name: &str) -> Result<Vec<u8>, String> {
