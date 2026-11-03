@@ -1,4 +1,4 @@
-//! Greek (el) interface localization for GridCraft.
+//! Greek (el) interface localization for IrisGrid.
 //! Command ids, cell references and formula identifiers are not translated.
 //! Source labels are kept verbatim and unmatched labels fall back to English.
 
@@ -331,7 +331,7 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Command\nPalette" => "Παλέτα\nεντολών",
         "Agent\nControl" => "Έλεγχος\nπρακτόρων",
         "Action\nJournal" => "Ιστορικό\nενεργειών",
-        "About\nGridCraft" => "Πληροφορίες για\nτο GridCraft",
+        "About\nIrisGrid" => "Πληροφορίες για\nτο IrisGrid",
         "Share" => "Κοινή χρήση",
         "Add Chart\nElement" => "Προσθήκη στοιχείου\nγραφήματος",
         "Change\nChart Type" => "Αλλαγή τύπου\nγραφήματος",
@@ -477,7 +477,7 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Hide Sheet" => "Απόκρυψη φύλλου",
         "Hierarchy & more" => "Ιεραρχία και άλλα",
         "Highlighter" => "Εργαλείο επισήμανσης",
-        "How agents drive GridCraft (MCP / control channel)" => "Πώς οι πράκτορες χειρίζονται το GridCraft (MCP / κανάλι ελέγχου)",
+        "How agents drive IrisGrid (MCP / control channel)" => "Πώς οι πράκτορες χειρίζονται το IrisGrid (MCP / κανάλι ελέγχου)",
         "Import a text or CSV file" => "Εισαγωγή αρχείου κειμένου ή CSV",
         "Insert\nSlicer" => "Εισαγωγή\nαναλυτή",
         "Insert Function (⇧F3)" => "Εισαγωγή συνάρτησης (⇧F3)",
@@ -588,7 +588,7 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Conditional Formatting Rules Manager" => "Διαχείριση κανόνων μορφοποίησης υπό όρους",
         "Search Commands" => "Αναζήτηση εντολών",
         "Agent Control" => "Έλεγχος πρακτόρων",
-        "About GridCraft" => "Πληροφορίες για το GridCraft",
+        "About IrisGrid" => "Πληροφορίες για το IrisGrid",
         "Insert Chart" => "Εισαγωγή γραφήματος",
         "Select Data Source" => "Επιλογή προέλευσης δεδομένων",
         "Action Journal" => "Ιστορικό ενεργειών",
@@ -786,7 +786,6 @@ pub(super) fn translate(text: &str) -> Option<&'static str> {
         "Contributors" => "Συντελεστές",
         "Models" => "Μοντέλα",
         "Version {version}" => "Έκδοση {version}",
-        "Join the ArtCraft Discord" => "Συμμετοχή στον διακομιστή Discord του ArtCraft",
         "This workbook has no scripts or macros." => "Αυτό το βιβλίο εργασίας δεν έχει δέσμες ενεργειών ή μακροεντολές.",
         "(unnamed)" => "(χωρίς όνομα)",
         "— VBA project (preserved, not run)" => "— Έργο VBA (διατηρείται, δεν εκτελείται)",

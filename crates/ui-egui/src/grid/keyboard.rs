@@ -51,7 +51,7 @@ pub(super) fn keyboard(app: &mut SheetApp, ctx: &egui::Context, resp: &egui::Res
                 app.copy_to_clipboard(ctx, "edit.cut");
             }
             egui::Event::Paste(text) => app.paste_external(text),
-            // GridCraft has no image-clipboard pipeline and no cell-picture insert-from-clipboard
+            // IrisGrid has no image-clipboard pipeline and no cell-picture insert-from-clipboard
             // command. Choosing to ignore `PasteImage` is explicit: inserting the bytes as a
             // floating picture without a chosen anchor/size would be a new feature, not parity.
             // A text representation, when the clipboard has one, still arrives as `Paste` above.
@@ -145,7 +145,7 @@ pub(super) fn keyboard(app: &mut SheetApp, ctx: &egui::Context, resp: &egui::Res
                     }
                     Key::F9 => app.run_or_alert("formulas.calculateNow", json!({})),
                     Key::F4 if !cmd => {}
-                    // Ctrl+Shift+letter (⌘⇧letter) runs the macro with that shortcut, unless GridCraft uses it.
+                    // Ctrl+Shift+letter (⌘⇧letter) runs the macro with that shortcut, unless IrisGrid uses it.
                     _ if cmd && shift && !m.alt && crate::macro_ui::run_shortcut(app, key) => {}
                     _ if cmd && !crate::keymap::altgr_text(ctx, m, ctx.os() == egui::os::OperatingSystem::Mac) => {
                         crate::ribbon::shortcut(app, key, m)
